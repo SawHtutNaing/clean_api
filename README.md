@@ -67,7 +67,8 @@ A production-ready RESTful API built with Laravel 12, featuring complete e-comme
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+mkdir laravel-ecommerce-api
+git clone <repository-url> .
 cd laravel-ecommerce-api
 ```
 
