@@ -1,101 +1,246 @@
-# Laravel Senior Developer Coding Test - Complete Solution
+# Laravel E-Commerce API - Senior Developer Coding Test
 
-## Overview
-This solution implements a production-ready RESTful API with authentication, CRUD operations, database optimization, and a reporting dashboard.
+A production-ready RESTful API built with Laravel 12, featuring complete e-commerce functionality including orders, products, transactions, and comprehensive analytics dashboard.
 
-## Features Implemented
+## 📋 Table of Contents
 
-### 1. API Development (Challenge 1) ✅
-- ✅ RESTful API for Products and Orders
-- ✅ Full CRUD operations
-- ✅ Form Request validation with custom rules
-- ✅ Pagination, Filtering, and Sorting
-- ✅ API Resources (transformers)
-- ✅ Custom Exception Handler
-- ✅ Laravel Sanctum authentication
-
-### 2. Database & Eloquent Performance (Challenge 2) ✅
-- ✅ 4 related tables: Users, Orders, OrderItems, Products
-- ✅ Efficient queries for sales by date range
-- ✅ Top selling products query
-- ✅ N+1 problem fixes with eager loading
-- ✅ Lazy vs Eager loading examples
-
-### 3. Mini Reporting Dashboard (Challenge 3) ✅
-- ✅ Analytics endpoint with comprehensive data
-- ✅ Total sales calculation
-- ✅ Monthly chart data with groupBy
-- ✅ Daily breakdown
-- ✅ Redis/File caching implementation
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [System Requirements](#system-requirements)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [API Documentation](#api-documentation)
+- [Authentication](#authentication)
+- [Testing](#testing)
+- [Performance Optimization](#performance-optimization)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
 
 ---
 
-## Installation & Setup
+## ✨ Features
+
+### Core Functionality
+- ✅ **RESTful API** for Products, Orders, and Transactions
+- ✅ **Full CRUD Operations** with validation
+- ✅ **Authentication** using Laravel Sanctum (token-based)
+- ✅ **Pagination, Filtering & Sorting** on all list endpoints
+- ✅ **API Resources** for clean data transformation
+- ✅ **Exception Handling** with consistent error responses
+- ✅ **Transaction Processing** (payments, refunds, partial payments)
+- ✅ **Analytics Dashboard** with caching
+
+### Advanced Features
+- ✅ **Query Optimization** with N+1 prevention
+- ✅ **Eager Loading** for efficient database queries
+- ✅ **Database Caching** (Redis/File support)
+- ✅ **Soft Deletes** for data preservation
+- ✅ **Database Indexes** for performance
+- ✅ **Comprehensive Validation** with Form Requests
+- ✅ **Realistic Demo Data** with seeders
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** Laravel 12
+- **PHP:** 8.2+
+- **Database:** MySQL 8.0+ 
+- **Authentication:** Laravel Sanctum
+- **Caching:** database
+- **API:** RESTful JSON API
+- **Testing:** PHPUnit
+
+---
+
+## 📦 System Requirements
+
+- PHP >= 8.2
+- Composer
+- MySQL >= 8.0 or PostgreSQL >= 14
+- Node.js & NPM (for frontend, if needed)
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the Repository
 
 ```bash
-# Install dependencies
+git clone <repository-url>
+cd laravel-ecommerce-api
+```
+
+### 2. Install Dependencies
+
+```bash
 composer install
+```
 
-# Configure environment
+### 3. Environment Configuration
+
+```bash
+# Copy environment file
 cp .env.example .env
+
+# Generate application key
 php artisan key:generate
+```
 
-# Run migrations
+### 4. Configure Database
+
+Edit `.env` file with your database credentials:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecommerce_api
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+### 5. Configure Cache (Optional)
+
+For Redis caching:
+
+```env
+CACHE_DRIVER=redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+For file caching (default):
+
+```env
+CACHE_DRIVER=file
+```
+
+---
+
+## 💾 Database Setup
+
+### Run Migrations
+
+```bash
 php artisan migrate
+```
 
-# Install Sanctum
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-php artisan migrate
+### Seed Demo Data
 
-# Seed database (optional)
+```bash
+# Seed all data (recommended for demo)
 php artisan db:seed
 
-# Cache configuration
-php artisan config:cache
+# Or fresh migration with seeding
+php artisan migrate:fresh --seed
+```
+
+**Demo Data Includes:**
+- 6 Users (including test@example.com / password)
+- 20 Products with stock
+- ~18 Orders with items
+- ~24-27 Transactions (various scenarios)
+
+### Database Schema
+
+```
+users
+├── id, name, email, password
+├── timestamps
+
+products
+├── id, name, description, price, stock, is_active
+├── timestamps, soft_deletes
+
+orders
+├── id, user_id, order_number
+├── total_amount, tax_amount, discount_amount
+├── status, completed_at
+├── timestamps, soft_deletes
+
+order_items
+├── id, order_id, product_id
+├── quantity, unit_price, subtotal
+├── timestamps
+
+transactions
+├── id, order_id, user_id, transaction_number
+├── amount, type, payment_method, status
+├── payment_gateway, gateway_transaction_id
+├── processed_at, failed_at, refunded_at
+├── timestamps, soft_deletes
 ```
 
 ---
 
-## API Endpoints
+## 📚 API Documentation
 
-### Authentication
+### Base URL
+
 ```
-POST   /api/register
-POST   /api/login
-POST   /api/logout
-GET    /api/user
-POST   /api/refresh
+http://localhost:8000/api
 ```
 
-### Products
-```
-GET    /api/products              # List with pagination/filtering
-GET    /api/products/{id}         # Show single product
-POST   /api/products              # Create product
-PUT    /api/products/{id}         # Update product
-DELETE /api/products/{id}         # Delete product
-```
+### Authentication Endpoints
 
-### Orders
-```
-GET    /api/orders                # List with pagination/filtering
-GET    /api/orders/{id}           # Show single order
-POST   /api/orders                # Create order
-PUT    /api/orders/{id}           # Update order
-DELETE /api/orders/{id}           # Delete order
-```
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/register` | Register new user | No |
+| POST | `/login` | Login user | No |
+| POST | `/logout` | Logout user | Yes |
+| GET | `/user` | Get authenticated user | Yes |
+| POST | `/refresh` | Refresh token | Yes |
 
-### Analytics
-```
-GET    /api/analytics/dashboard   # Get comprehensive analytics
-POST   /api/analytics/clear-cache # Clear analytics cache
-```
+### Product Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/products` | List all products | Yes |
+| GET | `/products/{id}` | Get single product | Yes |
+| POST | `/products` | Create product | Yes |
+| PUT | `/products/{id}` | Update product | Yes |
+| DELETE | `/products/{id}` | Delete product | Yes |
+
+### Order Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/orders` | List all orders | Yes |
+| GET | `/orders/{id}` | Get single order | Yes |
+| POST | `/orders` | Create order | Yes |
+| PUT | `/orders/{id}` | Update order | Yes |
+| DELETE | `/orders/{id}` | Delete order | Yes |
+
+### Transaction Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/transactions` | List all transactions | Yes |
+| GET | `/transactions/{id}` | Get single transaction | Yes |
+| POST | `/transactions` | Create transaction | Yes |
+| PUT | `/transactions/{id}` | Update transaction | Yes |
+| DELETE | `/transactions/{id}` | Delete transaction | Yes |
+| POST | `/transactions/{id}/process` | Process pending transaction | Yes |
+| POST | `/transactions/{id}/fail` | Mark transaction as failed | Yes |
+| POST | `/transactions/{id}/refund` | Refund transaction | Yes |
+| GET | `/transactions-stats` | Get transaction statistics | Yes |
+
+### Analytics Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/analytics/dashboard` | Get analytics data | Yes |
+| POST | `/analytics/clear-cache` | Clear analytics cache | Yes |
 
 ---
 
-## API Usage Examples
+## 🔐 Authentication
 
-### 1. Register & Login
+This API uses **Laravel Sanctum** for token-based authentication.
+
+### Register & Login
 
 ```bash
 # Register
@@ -112,12 +257,37 @@ curl -X POST http://localhost:8000/api/register \
 curl -X POST http://localhost:8000/api/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john@example.com",
-    "password": "password123"
+    "email": "test@example.com",
+    "password": "password"
   }'
+
+# Response
+{
+  "message": "Login successful",
+  "user": {
+    "id": 1,
+    "name": "Test User",
+    "email": "test@example.com"
+  },
+  "access_token": "1|xxxxxxxxxxxxxxxxxxx",
+  "token_type": "Bearer"
+}
 ```
 
-### 2. Create Product
+### Using the Token
+
+Include the token in the `Authorization` header:
+
+```bash
+curl -X GET http://localhost:8000/api/products \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+---
+
+## 📖 API Usage Examples
+
+### 1. Create Product
 
 ```bash
 curl -X POST http://localhost:8000/api/products \
@@ -132,27 +302,23 @@ curl -X POST http://localhost:8000/api/products \
   }'
 ```
 
-### 3. List Products with Filtering & Sorting
+### 2. List Products with Filters
 
 ```bash
 # With pagination
-curl "http://localhost:8000/api/products?per_page=10&page=1" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+GET /api/products?per_page=10&page=1
 
 # With filtering
-curl "http://localhost:8000/api/products?is_active=1&min_price=100&max_price=1000" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+GET /api/products?is_active=1&min_price=100&max_price=1000
 
 # With sorting
-curl "http://localhost:8000/api/products?sort_by=price&sort_order=desc" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+GET /api/products?sort_by=price&sort_order=desc
 
 # Combined
-curl "http://localhost:8000/api/products?is_active=1&min_price=100&sort_by=price&sort_order=asc&per_page=20" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+GET /api/products?is_active=1&min_price=100&sort_by=price&sort_order=asc&per_page=20
 ```
 
-### 4. Create Order
+### 3. Create Order
 
 ```bash
 curl -X POST http://localhost:8000/api/orders \
@@ -173,205 +339,376 @@ curl -X POST http://localhost:8000/api/orders \
   }'
 ```
 
-### 5. Get Analytics Dashboard
+### 4. Create Transaction (Payment)
 
 ```bash
-# Get dashboard data
-curl "http://localhost:8000/api/analytics/dashboard" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+curl -X POST http://localhost:8000/api/transactions \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": 1,
+    "amount": 150.00,
+    "type": "payment",
+    "payment_method": "credit_card",
+    "payment_gateway": "stripe"
+  }'
+```
 
-# With date range
-curl "http://localhost:8000/api/analytics/dashboard?start_date=2024-01-01&end_date=2024-12-31" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+### 5. Process Transaction
+
+```bash
+curl -X POST http://localhost:8000/api/transactions/1/process \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gateway_transaction_id": "ch_3NqzW2LkdIwHu7ix0B5v0q9C",
+    "gateway_response": "Payment successful"
+  }'
+```
+
+### 6. Get Analytics Dashboard
+
+```bash
+# Default (last 30 days)
+GET /api/analytics/dashboard
+
+# Custom date range
+GET /api/analytics/dashboard?start_date=2024-01-01&end_date=2024-12-31
+```
+
+**Response:**
+```json
+{
+  "total_sales": 15750.50,
+  "monthly_chart": [
+    {
+      "month": "2024-01",
+      "total_sales": 5250.00,
+      "order_count": 15,
+      "avg_order_value": 350.00
+    }
+  ],
+  "daily_breakdown": [
+    {
+      "date": "2024-01-15",
+      "total_sales": 1250.00,
+      "order_count": 5,
+      "total_tax": 62.50,
+      "total_discount": 125.00
+    }
+  ],
+  "top_products": [
+    {
+      "product_id": 1,
+      "product_name": "Laptop",
+      "total_quantity": 25,
+      "total_revenue": 7500.00,
+      "order_count": 15
+    }
+  ],
+  "summary": {
+    "total_orders": 45,
+    "avg_order_value": 350.00,
+    "total_revenue": 15750.00,
+    "total_tax_collected": 787.50,
+    "total_discounts_given": 1575.00
+  },
+  "transaction_summary": {
+    "total_transactions": 50,
+    "completed_transactions": 42,
+    "failed_transactions": 3,
+    "total_payments": 16000.00,
+    "total_refunds": 250.00,
+    "success_rate": 84.00
+  }
+}
 ```
 
 ---
 
-## Query Optimization Examples
+## 🧪 Testing
 
-### N+1 Problem Fix
+### Run All Tests
+
+```bash
+php artisan test
+```
+
+### Run Specific Test
+
+```bash
+php artisan test --filter OrderApiTest
+```
+
+### With Coverage
+
+```bash
+php artisan test --coverage
+```
+
+### Test Data
+
+Use the seeded test user:
+- **Email:** test@example.com
+- **Password:** password
+
+---
+
+## ⚡ Performance Optimization
+
+### 1. N+1 Problem Prevention
+
+All controllers use **eager loading**:
 
 ```php
-// ❌ BAD - N+1 Problem (1 + N + N*M queries)
-$orders = Order::all();
-foreach ($orders as $order) {
-    foreach ($order->items as $item) {
-        echo $item->product->name;
-    }
-}
+// OrderController
+Order::with(['user', 'items.product'])->get();
 
-// ✅ GOOD - Eager Loading (3 queries total)
-$orders = Order::with(['items.product'])->get();
-foreach ($orders as $order) {
-    foreach ($order->items as $item) {
-        echo $item->product->name; // No additional query
-    }
-}
+// TransactionController
+Transaction::with(['order', 'user'])->get();
 ```
 
-### Efficient Date Range Queries
+
+### 2. Caching
+
+Analytics data cached for 1 hour:
 
 ```php
-// Sales by date range with groupBy
-$sales = Order::completed()
-    ->whereBetween('created_at', [$startDate, $endDate])
-    ->select(
-        DB::raw('DATE(created_at) as date'),
-        DB::raw('SUM(total_amount) as total_sales'),
-        DB::raw('COUNT(*) as order_count')
-    )
-    ->groupBy('date')
-    ->get();
+Cache::remember('analytics_dashboard', 3600, function () {
+    // Expensive queries
+});
+```
+
+Clear cache manually:
+
+```bash
+# Via API
+POST /api/analytics/clear-cache
+
+# Via Artisan
+php artisan cache:clear
+```
+
+### 3. Query Optimization
+
+Using Query Builder with joins and groupBy:
+
+```php
+Order::select(
+    DB::raw('DATE(created_at) as date'),
+    DB::raw('SUM(total_amount) as total_sales'),
+    DB::raw('COUNT(*) as order_count')
+)
+->groupBy('date')
+->get();
 ```
 
 ---
 
-## Validation Rules
+## 📁 Project Structure
 
-### Product Validation
-- `name`: required, string, max 255 characters
-- `description`: optional, string
-- `price`: required, numeric, min 0
-- `stock`: required, integer, min 0
-- `is_active`: boolean
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Api/
+│   │       ├── AuthController.php
+│   │       ├── OrderController.php
+│   │       ├── ProductController.php
+│   │       ├── TransactionController.php
+│   │       └── AnalyticsController.php
+│   ├── Requests/
+│   │   ├── StoreOrderRequest.php
+│   │   ├── UpdateOrderRequest.php
+│   │   ├── StoreProductRequest.php
+│   │   ├── UpdateProductRequest.php
+│   │   ├── StoreTransactionRequest.php
+│   │   └── UpdateTransactionRequest.php
+│   └── Resources/
+│       ├── OrderResource.php
+│       ├── ProductResource.php
+│       └── TransactionResource.php
+├── Models/
+│   ├── User.php
+│   ├── Product.php
+│   ├── Order.php
+│   ├── OrderItem.php
+│   └── Transaction.php
+└── Exceptions/
+    └── Handler.php
 
-### Order Validation
-- `items`: required, array, min 1 item
-- `items.*.product_id`: required, must exist in products table
-- `items.*.quantity`: required, integer, min 1
-- `discount_amount`: optional, numeric, min 0
+database/
+├── migrations/
+│   ├── create_products_table.php
+│   ├── create_orders_table.php
+│   ├── create_order_items_table.php
+│   └── create_transactions_table.php
+├── seeders/
+│   ├── DatabaseSeeder.php
+│   ├── UserSeeder.php
+│   ├── ProductSeeder.php
+│   ├── OrderSeeder.php
+│   └── TransactionSeeder.php
+└── factories/
+    ├── UserFactory.php
+    ├── ProductFactory.php
+    ├── OrderFactory.php
+    └── TransactionFactory.php
+
+routes/
+└── api.php
+
+tests/
+└── Feature/
+    ├── OrderApiTest.php
+    └── AnalyticsApiTest.php
+```
 
 ---
 
-## Performance Features
+## 🔧 Configuration
 
-1. **Eager Loading**: Prevents N+1 queries
-2. **Database Indexes**: On frequently queried columns
-3. **Query Caching**: Analytics data cached for 1 hour
-4. **Efficient Queries**: Uses Query Builder with joins and groupBy
-5. **Pagination**: All list endpoints support pagination
-6. **Soft Deletes**: Data preservation with soft deletes
+### Cache Configuration
+
+Edit `config/cache.php` or use `.env`:
+
+```env
+CACHE_DRIVER=redis  # or file, database, memcached
+```
+
+### Database Configuration
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecommerce_api
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Sanctum Configuration
+
+```env
+SANCTUM_STATEFUL_DOMAINS=localhost,127.0.0.1
+```
 
 ---
 
-## Error Handling
+## 🐛 Error Handling
 
-All API responses follow consistent format:
+### Consistent Error Responses
+
+All API errors return consistent JSON format:
 
 ```json
 {
   "error": "Error type",
   "message": "Human-readable message",
-  "errors": {} // For validation errors
+  "errors": {
+    "field": ["validation error"]
+  }
 }
 ```
 
-HTTP Status Codes:
-- `200`: Success
-- `201`: Created
-- `401`: Unauthorized
-- `404`: Not Found
-- `422`: Validation Error
-- `500`: Server Error
+### HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 422 | Validation Error |
+| 500 | Server Error |
 
 ---
 
-## Testing
+## 📊 Key Features Demonstrated
+
+### 1. RESTful API Design
+✅ Resource-based URLs
+✅ HTTP method semantics
+✅ Consistent response format
+
+### 2. Database Optimization
+✅ Efficient queries with joins
+✅ N+1 problem prevention
+✅ Database indexes
+✅ Query caching
+
+### 3. Security
+✅ Token-based authentication
+✅ Request validation
+✅ SQL injection prevention
+✅ XSS protection
+
+### 4. Code Quality
+✅ PSR-12 coding standards
+✅ Single Responsibility Principle
+✅ DRY (Don't Repeat Yourself)
+✅ Comprehensive error handling
+
+---
+
+## 🎯 Coding Test Completion Checklist
+
+### Challenge 1: API Development ✅
+- [x] RESTful API for Orders, Transactions, Products
+- [x] Full CRUD operations
+- [x] Validation rules (Form Requests)
+- [x] Pagination + Filtering + Sorting
+- [x] API Resources (transformers)
+- [x] Error handling (Exception Handler)
+- [x] Sanctum authentication
+
+### Challenge 2: Database + Eloquent Performance ✅
+- [x] 4 related tables with relationships
+- [x] Sales by date range queries
+- [x] Top selling products queries
+- [x] Lazy vs eager loading examples
+- [x] N+1 fixes implemented
+
+### Challenge 3: Mini Reporting Dashboard ✅
+- [x] Analytics endpoint
+- [x] Total sales calculation
+- [x] Monthly chart data
+- [x] Daily breakdown
+- [x] Query Builder + groupBy
+- [x] Caching (Redis/File)
+
+---
+
+## 🚀 Running the Application
+
+### Development Server
 
 ```bash
-# Run all tests
-php artisan test
-
-# Run specific test
-php artisan test --filter OrderApiTest
-
-# With coverage
-php artisan test --coverage
+php artisan serve
 ```
 
----
+Access at: `http://localhost:8000`
 
-## Cache Management
 
-```bash
-# Clear all cache
-php artisan cache:clear
-
-# Clear analytics cache via API
-curl -X POST http://localhost:8000/api/analytics/clear-cache \
-  -H "Authorization: Bearer YOUR_TOKEN"
-```
 
 ---
 
-## Database Schema
+## 📝 License
 
-```
-users
-├── id
-├── name
-├── email
-├── password
-└── timestamps
-
-products
-├── id
-├── name
-├── description
-├── price
-├── stock
-├── is_active
-└── timestamps
-
-orders
-├── id
-├── user_id (FK)
-├── order_number
-├── total_amount
-├── tax_amount
-├── discount_amount
-├── status
-├── completed_at
-└── timestamps
-
-order_items
-├── id
-├── order_id (FK)
-├── product_id (FK)
-├── quantity
-├── unit_price
-├── subtotal
-└── timestamps
-```
+This project is for demonstration purposes as part of a coding test.
 
 ---
 
-## Key Design Decisions
+## 👤 Author
 
-1. **Sanctum over JWT**: Simpler, Laravel-native, secure
-2. **API Resources**: Clean separation of data transformation
-3. **Form Requests**: Centralized validation logic
-4. **Repository Pattern**: Not used to keep code simple (can be added if needed)
-5. **Service Layer**: Query optimization service for complex queries
-6. **Caching Strategy**: 1-hour cache with manual clear option
+Saw Htut naing - Coding Test Submission
 
 ---
 
-## Production Checklist
+## 🙏 Acknowledgments
 
-- [ ] Set `APP_DEBUG=false` in production
-- [ ] Configure Redis for caching
-- [ ] Set up queue workers for background jobs
-- [ ] Enable API rate limiting
-- [ ] Configure CORS properly
-- [ ] Set up monitoring and logging
-- [ ] Add API versioning
-- [ ] Implement comprehensive tests
-- [ ] Set up CI/CD pipeline
-- [ ] Document all endpoints with OpenAPI/Swagger
+- Laravel Framework
+- Laravel Sanctum
+- PHPUnit Testing Framework
 
 ---
-
-## License
-This is a coding test solution for Solution Hub Myanmar ;
-# clean_api
