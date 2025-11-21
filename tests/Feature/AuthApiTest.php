@@ -20,7 +20,7 @@ class AuthApiTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->postJson('/api/register', $data);
+        $response = $this->postJson('/api/v1/register', $data);
 
         $response->assertStatus(201)
             ->assertJsonStructure(['message', 'user', 'access_token']);
@@ -37,7 +37,7 @@ class AuthApiTest extends TestCase
             'password' => 'password',
         ];
 
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
 
         $response->assertStatus(200)
             ->assertJsonStructure(['message', 'user', 'access_token']);
@@ -46,7 +46,7 @@ class AuthApiTest extends TestCase
     /** @test */
     public function it_validates_invalid_login()
     {
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/v1/login', [
             'email' => 'invalid@example.com',
             'password' => 'wrong',
         ]);

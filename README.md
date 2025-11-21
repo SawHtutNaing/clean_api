@@ -431,21 +431,17 @@ GET /api/analytics/dashboard?start_date=2024-01-01&end_date=2024-12-31
 
 ### Run All Tests
 
-```bash
-php artisan test
-```
 
 ### Run Specific Test
 
 ```bash
+php artisan test --filter AnalyticsApiTest
+php artisan test --filter AuthApiTest
 php artisan test --filter OrderApiTest
+php artisan test --filter ProductApiTest
 ```
 
-### With Coverage
 
-```bash
-php artisan test --coverage
-```
 
 ### Test Data
 

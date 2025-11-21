@@ -28,7 +28,7 @@ class ProductApiTest extends TestCase
         Product::factory()->count(20)->create();
 
         $response = $this->withToken($this->token)
-            ->getJson('/api/products?per_page=10');
+            ->getJson('/api/v1/products?per_page=10');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -47,7 +47,7 @@ class ProductApiTest extends TestCase
         ];
 
         $response = $this->withToken($this->token)
-            ->postJson('/api/products', $productData);
+            ->postJson('/api/v1/products', $productData);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('products', ['name' => 'Test Product']);
@@ -56,7 +56,7 @@ class ProductApiTest extends TestCase
     /** @test */
     public function it_requires_authentication_for_products()
     {
-        $response = $this->getJson('/api/products');
+        $response = $this->getJson('/api/v1/products');
         $response->assertStatus(401);
     }
 }

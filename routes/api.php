@@ -51,32 +51,32 @@ Route::prefix('v1')->group(function () {
 
 // Example API endpoints:
 /*
-POST   /api/register
-POST   /api/login
-POST   /api/logout
+POST   /api/v1/register
+POST   /api/v1/login
+POST   /api/v1/logout
 
-GET    /api/products
-GET    /api/products/{id}
-POST   /api/products
-PUT    /api/products/{id}
-DELETE /api/products/{id}
+GET    /api/v1/products
+GET    /api/v1/products/{id}
+POST   /api/v1/products
+PUT    /api/v1/products/{id}
+DELETE /api/v1/products/{id}
 
-GET    /api/orders
-GET    /api/orders/{id}
-POST   /api/orders
-PUT    /api/orders/{id}
-DELETE /api/orders/{id}
+GET    /api/v1/orders
+GET    /api/v1/orders/{id}
+POST   /api/v1/orders
+PUT    /api/v1/orders/{id}
+DELETE /api/v1/orders/{id}
 
-GET    /api/transactions
-GET    /api/transactions/{id}
-POST   /api/transactions
-PUT    /api/transactions/{id}
-DELETE /api/transactions/{id}
-POST   /api/transactions/{id}/process
-POST   /api/transactions/{id}/fail
-POST   /api/transactions/{id}/refund
-GET    /api/transactions-stats
+GET    /api/v1/transactions
+GET    /api/v1/transactions/{id}
+POST   /api/v1/transactions
+PUT    /api/v1/transactions/{id}
+DELETE /api/v1/transactions/{id}
+POST   /api/v1/transactions/{id}/process
+POST   /api/v1/transactions/{id}/fail
+POST   /api/v1/transactions/{id}/refund
+GET    /api/v1/transactions-stats
 
-GET    /api/analytics/dashboard
-POST   /api/analytics/clear-cache
+GET    /api/v1/analytics/dashboard
+POST   /api/v1/analytics/clear-cache
 */

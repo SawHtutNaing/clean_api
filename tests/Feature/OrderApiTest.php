@@ -30,7 +30,7 @@ class OrderApiTest extends TestCase
         Order::factory()->count(20)->create(['user_id' => $this->user->id]);
 
         $response = $this->withToken($this->token)
-            ->getJson('/api/orders?per_page=10');
+            ->getJson('/api/v1/orders?per_page=10');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -57,7 +57,7 @@ class OrderApiTest extends TestCase
         Order::factory()->create(['user_id' => $this->user->id, 'status' => 'completed']);
 
         $response = $this->withToken($this->token)
-            ->getJson('/api/orders?status=completed');
+            ->getJson('/api/v1/orders?status=completed');
 
         $response->assertStatus(200);
         $this->assertEquals(1, count($response->json('data')));
@@ -78,7 +78,7 @@ class OrderApiTest extends TestCase
         ];
 
         $response = $this->withToken($this->token)
-            ->postJson('/api/orders', $orderData);
+            ->postJson('/api/v1/orders', $orderData);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -112,7 +112,7 @@ class OrderApiTest extends TestCase
         ];
 
         $response = $this->withToken($this->token)
-            ->postJson('/api/orders', $orderData);
+            ->postJson('/api/v1/orders', $orderData);
 
         $response->assertStatus(422);
     }
@@ -120,7 +120,7 @@ class OrderApiTest extends TestCase
     /** @test */
     public function it_requires_authentication()
     {
-        $response = $this->getJson('/api/orders');
+        $response = $this->getJson('/api/v1/orders');
         $response->assertStatus(401);
     }
 }

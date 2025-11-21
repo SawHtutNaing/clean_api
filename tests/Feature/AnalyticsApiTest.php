@@ -23,7 +23,7 @@ class AnalyticsApiTest extends TestCase
         ]);
 
         $response = $this->withToken($token)
-            ->getJson('/api/analytics/dashboard');
+            ->getJson('/api/v1/analytics/dashboard');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
