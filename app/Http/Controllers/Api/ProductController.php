@@ -32,7 +32,7 @@ class ProductController extends Controller
             $query->where('name', 'like', '%'.$request->search.'%');
         }
 
-        // Sorting
+
         $sortBy = $request->input('sort_by', 'created_at');
         $sortOrder = $request->input('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);

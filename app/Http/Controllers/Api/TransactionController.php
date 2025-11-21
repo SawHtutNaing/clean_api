@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProcessTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Http\Requests\ProcessTransactionRequest;
 use App\Http\Resources\TransactionResource;
-use App\Models\Order;
 use App\Models\Transaction;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -66,7 +66,7 @@ class TransactionController extends Controller
 
         // Search by transaction number
         if ($request->has('search')) {
-            $query->where('transaction_number', 'like', '%'.$request->search.'%');
+            $query->where('transaction_number', 'like', '%' . $request->search . '%');
         }
 
         // Sorting
@@ -138,15 +138,15 @@ class TransactionController extends Controller
         $transaction->update($request->validated());
 
         // Update timestamps based on status
-        if ($request->status === 'completed' && ! $transaction->processed_at) {
+        if ($request->status === 'completed' && !$transaction->processed_at) {
             $transaction->update(['processed_at' => now()]);
         }
 
-        if ($request->status === 'failed' && ! $transaction->failed_at) {
+        if ($request->status === 'failed' && !$transaction->failed_at) {
             $transaction->update(['failed_at' => now()]);
         }
 
-        if ($request->status === 'refunded' && ! $transaction->refunded_at) {
+        if ($request->status === 'refunded' && !$transaction->refunded_at) {
             $transaction->update(['refunded_at' => now()]);
         }
 
@@ -240,7 +240,7 @@ class TransactionController extends Controller
                 'type' => 'refund',
                 'payment_method' => $transaction->payment_method,
                 'payment_gateway' => $transaction->payment_gateway,
-                'notes' => $request->input('notes', 'Refund for transaction '.$transaction->transaction_number),
+                'notes' => $request->input('notes', 'Refund for transaction ' . $transaction->transaction_number),
                 'status' => 'completed',
                 'processed_at' => now(),
                 'refunded_at' => now(),
@@ -268,7 +268,7 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         // Only allow deletion of pending or failed transactions
-        if (! in_array($transaction->status, ['pending', 'failed', 'cancelled'])) {
+        if (!in_array($transaction->status, ['pending', 'failed', 'cancelled'])) {
             return response()->json([
                 'error' => 'Cannot delete transaction',
                 'message' => 'Only pending, failed, or cancelled transactions can be deleted',

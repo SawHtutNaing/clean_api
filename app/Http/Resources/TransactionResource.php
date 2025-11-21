@@ -36,8 +36,7 @@ class TransactionResource extends JsonResource
             'processed_at' => $this->processed_at?->toIso8601String(),
             'failed_at' => $this->failed_at?->toIso8601String(),
             'refunded_at' => $this->refunded_at?->toIso8601String(),
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+d
         ];
     }
 }

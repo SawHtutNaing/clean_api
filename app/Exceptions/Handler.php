@@ -21,6 +21,7 @@ class Handler extends ExceptionHandler
 
     public function handleApiException($request, Throwable $exception)
     {
+
         // Model Not Found
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([

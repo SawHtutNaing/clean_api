@@ -51,7 +51,7 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
-            $taxRate = 0.1; // 10% tax
+            $taxRate = 0.1;
             $subtotal = 0;
 
             // Calculate subtotal and validate stock
@@ -72,7 +72,7 @@ class OrderController extends Controller
             $taxAmount = ($subtotal - $discountAmount) * $taxRate;
             $totalAmount = $subtotal - $discountAmount + $taxAmount;
 
-            // Create order
+
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'total_amount' => $totalAmount,
@@ -81,7 +81,7 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Create order items and update stock
+
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['product_id']);
 

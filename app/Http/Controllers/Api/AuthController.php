@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -93,9 +94,8 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
-        return response()->json([
-            'user' => $request->user(),
-        ]);
+        $user = $request->user();
+        return new UserResource($user);
     }
 
     /**

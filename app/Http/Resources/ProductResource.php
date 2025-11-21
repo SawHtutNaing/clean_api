@@ -17,8 +17,8 @@ class ProductResource extends JsonResource
             'formatted_price' => '$'.number_format($this->price, 2),
             'stock' => $this->stock,
             'is_active' => $this->is_active,
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+
+            
         ];
     }
 }
